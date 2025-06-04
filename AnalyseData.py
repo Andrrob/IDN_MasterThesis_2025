@@ -2,9 +2,11 @@ import pandas as pd
 import os
 from scipy.stats import pearsonr
 
+# This script loops through .csv files from data recordings during the experiments and saves a summary of all of them in a new csv file.
+
 # Folder containing the CSV files
-folder_path = "csv_files_copy"
-summary_file = "distance_hrv_summary.csv"
+folder_path = 
+summary_file = 
 
 # List to store results
 summary_data = []
