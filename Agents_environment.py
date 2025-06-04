@@ -5,8 +5,6 @@ import time
 
 from Agent import discretize_state, state_bins, state_history
 
-#from test import OpenCallProtestsApp
-
 
 # This script defines the environment of the Q-learning agent
 # Written by Andrea Robinson 
@@ -17,21 +15,21 @@ class WarsawProtestEnv(gym.Env):
 
         self.lock = lock 
 
-        # Observation space: HRV (0 to 9) and distance (0 to 9)
-        self.observation_space = spaces.Box(low=np.array([0, 0]), high=np.array([4, 10]), dtype=np.float32)
+        # Observation space: HRV (0 to 3) and distance (0 to 5)
+        self.observation_space = spaces.Box(low=np.array([0, 0]), high=np.array([3, 5]), dtype=np.float32)
         
         # Four discrete actions 
         self.action_space = spaces.Discrete(4)
         self.actions_mapping = {
-            0: ("character_walk_to_object", "neil_agent self 1.3 Walk"), # The agent´s avarar walks to participant
-            1: ("character_walk_to_coordinates", "neil_agent 180,1.69,58 1.3 Walk"), # The agent's avatar walks to a point near the midpoint between the center of the protest and the participant's starting position.
-            2: ("look_at_character", "neil_agent self EyesAndHead"), # The agent's avatar look at the participant. 
-            3: ("play_recording", "neil_agent WarsawTestRecording_0001 0.1 false"), # The agent's avatar makes a motion resembling a beckoning gesture, intended to encourage others to follow.
+            0:  # The agent´s avarar walks to participant
+            1:  # The agent's avatar walks to a point near the midpoint between the center of the protest and the participant's starting position.
+            2:  # The agent's avatar look at the participant. 
+            3:  # The agent's avatar makes a motion resembling a beckoning gesture, intended to encourage others to follow.
         }
            
         self.state = None
         self.timestep = 0
-        self.script_test_instance = script_test_instance # Allows the WarsawProtestEnv to access and modify the "is_action_complet" flag defined in test.py
+        self.script_test_instance = script_test_instance # Allows the WarsawProtestEnv to access and modify the "is_action_complet" flag
 
     def get_real_time_data(self, vec_hrv, vec_distances):
         time.sleep(5)
@@ -65,12 +63,7 @@ class WarsawProtestEnv(gym.Env):
         time.sleep(3)
         self.script_test_instance.is_action_completed = False #set the if comlpeted flag back to false
         time.sleep(2)
-        
-        # Get participant's response (distance and puls) to the action and update the current state
-        
-        #hrv, distance = self.get_real_time_data(vec_hrv, vec_distances)
-        #self.state = np.array([hrv, distance], dtype=np.float32)
-        #state = discretize_state(state, state_bins)
+
 
         self.state = self.get_real_time_data(vec_hrv, vec_distances)
         _ , distance = self.state 
