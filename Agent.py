@@ -19,7 +19,7 @@ state_history = []
 current_action = []
 
 # Q-table file path
-q_table_file = "q_table_demo.pkl"
+q_table_file =  # Q-table pickle file here
 
 # Initialize the Q-table 
 def initialize_q_table():
@@ -36,15 +36,10 @@ def save_q_table(Q_table):
     with open(q_table_file, 'wb') as f:
         pickle.dump(Q_table, f)
 
-def reset_q_table(): # Q-table must be reset before starting proper training 
-    Q_table = np.zeros(state_bins + [actions])
-    save_q_table(Q_table)
-    print(f"Q-table has been reset to all zeros.")
 
-
-# Funksjon for å normalisere HRV-verdier til en skala fra 0 til 3
+# Function to normalize HRV values to a scale from 0 to 3
 def normalize_hrv(hrv):
-    # Defining stress levels based on the baseline lnRMSSD = 3.72
+    # Defining stress levels based on the baseline lnRMSSD = 3.72 # The Pooled average form this study doi: 10.1016/j.autneu.2008.10.011
     if hrv < 3.00:  # More than 20% below baseline (High Stress)
         return 3  
     elif 3.00 <= hrv < 3.35:  # 10-20% below baseline (Moderate Stress)
@@ -62,7 +57,7 @@ def normalize_distance(distance):
     elif distance >= 23:
         return 5
     else:
-        # Lineær mapping mellom 18 (0) og 23 (5)
+        # Linear mapping between 18 (0) and 23 (5)
         return round(((distance - 18) / (23 - 18)) * 5)
 
 # Discretize the hrv and distance into bins
@@ -70,10 +65,7 @@ def discretize_state(state, bins):
     HRV_value, distance = state
     
     # Pulse: Normalize between 20 bpm and 250 bpm
-    #pulse_bin_width = (250 - 20) / bins[0]  #Assuming puls is between 20 and 250 bpm
-    #pulse_state = min(int((pulse - 20) / pulse_bin_width), bins[0] - 1)
     HRV_state = normalize_hrv(HRV_value) 
-
 
     distance_state = normalize_distance(distance)
     print(f"Distance: {distance_state}, HRV: {HRV_state}")
@@ -99,7 +91,7 @@ def train_agent(env, actuators, vec_hrv, vec_distances, training_finish): # vec_
     Q_table = initialize_q_table()
 
     
-    # Get the state (participant´s puls and distance to protest)
+    # Get the state (participant´s hrv and distance to protest)
     state = env.get_real_time_data(vec_hrv, vec_distances)
     #state = np.array([hrv, distance], dtype=np.float32)
     #state = discretize_state(state, state_bins)
