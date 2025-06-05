@@ -3,7 +3,12 @@ import numpy as np
 from scipy.stats import t, levene, bartlett, shapiro, ttest_ind, mannwhitneyu
 import itertools
 
-summary_df = pd.read_csv("distance_hrv_summary.csv")
+# This script performs statistical comparisons between groups in the dataset "summary.csv" created in AnalyzeData.py.
+# It calculates confidence intervals, tests for normality and variance homogeneity, 
+# chooses appropriate statistical tests (T-test or Mann-Whitney U-test), 
+# and exports the groupwise comparison results to an Excel file.
+
+summary_df = pd.read_csv("summary.csv")
 labels = [("Mean Distance", "mean"), ("Median Distance", "median"), ("Min Distance", "min")]
 #labels = [("Mean Distance"), ("Median Distance"), ("Min Distance")]
 groups = sorted(summary_df["Group Number"].unique())
@@ -93,22 +98,19 @@ def run_and_export_groupwise_tables():
 
     print("[✓] Groupwise test results saved to appendix_groupwise_tests.xlsx")
 
-
 def Shapiro_Wilk_test(data):
     stat, p = shapiro(data)
-            #print(f"Gruppe {group}: p = {p:.4f}", end=" → ")
+    #print(f"Group {group}: p = {p:.4f}", end=" → ")
     if p < 0.05:
-        #print("❗ Avviker signifikant fra normalfordeling")
+        #print("❗ Significantly deviates from normal distribution")
         return p, False
     else:
-        #print("✅ Kan anta normalfordeling")
+        #print("✅ Can assume normal distribution")
         return p, True
 
-
 def test_normal_dist():
-    
     for col_name, label in labels:
-        print(f"\n=== Test av normalfordeling for hver gruppe (Shapiro-Wilk) {col_name} ===")
+        print(f"\n=== Normality test for each group (Shapiro-Wilk) {col_name} ===")
         #group1 = summary_df[summary_df["Group Number"] == 1][label].dropna()
         #group2 = summary_df[summary_df["Group Number"] == 2][label].dropna()
         #group3 = summary_df[summary_df["Group Number"] == 3][label].dropna()
@@ -116,11 +118,11 @@ def test_normal_dist():
         for group in sorted(summary_df["Group Number"].unique()):
             group_data = summary_df[summary_df["Group Number"] == group][col_name].dropna()
             p, res = Shapiro_Wilk_test(group_data)
-            print(f"Gruppe {group}: p = {p:.4f}", end=" → ")
+            print(f"Group {group}: p = {p:.4f}", end=" → ")
             if res == True:
-                print("✅ Kan anta normalfordeling")
+                print("✅ Can assume normal distribution")
             else: 
-                print("❗ Avviker signifikant fra normalfordeling")
+                print("❗ Significantly deviates from normal distribution")
 
 def print_basic_res():
     label = "Min Distance"
@@ -136,8 +138,7 @@ def print_basic_res():
     print(f"Median of min distance in group 2: {np.median(group2)}")
     print(f"Median of min distance in group 3: {np.median(group3)}")
 
-#test_normal_dist()
-print_basic_res()
+
 
 #if __name__ == "__main__":
 #    run_and_export_groupwise_tables()
