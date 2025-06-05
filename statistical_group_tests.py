@@ -124,7 +124,7 @@ def test_normal_dist():
             else: 
                 print("❗ Significantly deviates from normal distribution")
 
-def print_basic_res():
+def descriptive_statistics():
     label = "Min Distance"
     group1 = summary_df[summary_df["Group Number"] == 1][label].dropna()
     group2 = summary_df[summary_df["Group Number"] == 2][label].dropna()
