@@ -26,10 +26,19 @@ def plotting():
     # --- 1. Mean distance with confidence intervals ---
     plt.figure(figsize=(10, 6))
     for idx, group_data in enumerate([group1, group2, group3], start=1):
-        mean = group_data.mean()
-        ci_lower = group_data.mean() - (1.96 * group_data.std() / np.sqrt(len(group_data)))
-        ci_upper = group_data.mean() + (1.96 * group_data.std() / np.sqrt(len(group_data)))
+        n = len(group_data)
+        mean = np.mean(group_data)
+        std = np.std(group_data, ddof=1)  # Use ddof=1 for sample standard deviation
         
+        # Calculate 95% confidence interval using the t-distribution
+        ci_lower, ci_upper = t.interval(
+            confidence=0.95,
+            df=n-1,  # Degrees of freedom = number of data points - 1
+            loc=mean,  
+            scale=std / np.sqrt(n)  # Standard error = std / sqrt(n)
+        )
+        
+          # Plot with error bars
         plt.errorbar(
             x=[idx],
             y=[mean],
@@ -39,7 +48,7 @@ def plotting():
             capsize=5,
             elinewidth=2,
             markersize=8,
-            label=f"Group {idx}"
+            label=f"Gruppe {idx}"
         )
 
     plt.title("Mean Distance with 95% Confidence Intervals")
